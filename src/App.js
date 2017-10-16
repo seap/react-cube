@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
-import './App.css';
+import React, { Component } from 'react'
+import { Button, Row, Col } from 'antd'
+import './App.css'
 
 // 6面颜色, 0前 1右 2后 3左 4上 5下
 const colors = ['red', 'green', 'orange', 'blue', 'yellow', 'white']
@@ -148,6 +149,8 @@ class App extends Component {
         y: 30,
         z: 0
       },
+      // 自动旋转
+      autoRotating: false,
       faces,
       faceRotations: [
         { x: 0, y: 0, z: 0 }, 
@@ -288,10 +291,10 @@ class App extends Component {
   }
 
   renderFaces() {
-    const { faces, faceRotations, stickerIdVisible, faceTransition, cubeRotation } = this.state
+    const { faces, faceRotations, stickerIdVisible, faceTransition, cubeRotation, autoRotating } = this.state
 
     return (
-      <div className="cube" style={{ transform: `rotateX(${cubeRotation.x}deg) rotateY(${cubeRotation.y}deg) rotateZ(${cubeRotation.z}deg)` }}>
+      <div className={`cube ${autoRotating ? 'rotating': ''}`} style={{ transform: `rotateX(${cubeRotation.x}deg) rotateY(${cubeRotation.y}deg) rotateZ(${cubeRotation.z}deg)` }}>
       {faces.map((face, i) => 
         <div id={i} key={i} className="face" style={{ transition: faceTransition ? '0.5s ease all' : '', transform: `rotateX(${faceRotations[i].x}deg) rotateY(${faceRotations[i].y}deg)  rotateZ(${faceRotations[i].z}deg)` }}>
           {face.map((sticker, j) => (
@@ -316,29 +319,88 @@ class App extends Component {
           {this.renderFaces()}
         </ul>
         <div className="controller">
-          <button onClick={() => this.rotateCube('x', true)}>cubeRotateX +</button>
-          <button onClick={() => this.rotateCube('x', false)}>cubeRotateX -</button>
-          <button onClick={() => this.rotateCube('y', true)}>cubeRotateY +</button>
-          <button onClick={() => this.rotateCube('y', false)}>cubeRotateY -</button>
-          <button onClick={() => this.rotateCube('z', true)}>cubeRotateZ +</button>
-          <button onClick={() => this.rotateCube('z', false)}>cubeRotateZ -</button>
-          <button onClick={() => this.showStickerId()}>showStickerId</button> 
-          <br/>
-          <button onClick={() => this.retateFace(0, true)}>Front</button>
-          <button onClick={() => this.retateFace(0, false)}>Front'</button>
-          <button onClick={() => this.retateFace(1, true)}>Right</button>
-          <button onClick={() => this.retateFace(1, false)}>Right'</button>
-          <button onClick={() => this.retateFace(2, true)}>Behind</button>
-          <button onClick={() => this.retateFace(2, false)}>Behind'</button>
-          <button onClick={() => this.retateFace(3, true)}>Left</button>
-          <button onClick={() => this.retateFace(3, false)}>Left'</button>
-          <button onClick={() => this.retateFace(4, true)}>Up</button>
-          <button onClick={() => this.retateFace(4, false)}>Up'</button>
-          <button onClick={() => this.retateFace(5, true)}>Down</button>
-          <button onClick={() => this.retateFace(5, false)}>Down'</button>
+          <div className="item">
+            <Button.Group>
+              <Button type="primary" onClick={() => this.rotateCube('x', true)}>X +</Button>
+              <Button onClick={() => this.rotateCube('x', false)}>X -</Button>
+            </Button.Group>
+          </div>
+          <div className="item">
+            <Button.Group>
+              <Button type="primary" onClick={() => this.rotateCube('y', true)}>Y +</Button>
+              <Button onClick={() => this.rotateCube('y', false)}>Y -</Button>
+            </Button.Group>
+          </div>
+          <div className="item">
+            <Button.Group>
+              <Button type="primary" onClick={() => this.rotateCube('z', true)}>Z +</Button>
+              <Button onClick={() => this.rotateCube('z', false)}>Z -</Button>
+            </Button.Group>
+          </div>
+          <div className="item">
+            <Button.Group>
+              <Button type="primary" onClick={() => this.autoRotate()}>auto</Button>
+            </Button.Group>
+          </div>
+          <div className="item">
+            <Button.Group>
+              <Button type="primary" onClick={() => this.disrupt()}>打乱</Button>
+              <Button onClick={() => this.showStickerId()}>编号</Button>
+            </Button.Group>
+          </div>
+          <div className="item">
+            <Button.Group>
+              <Button type="primary" onClick={() => this.retateFace(0, true)}>Front</Button>
+              <Button onClick={() => this.retateFace(0, false)}>Front'</Button>
+            </Button.Group>
+          </div>
+          <div className="item">
+            <Button.Group>
+              <Button type="primary" onClick={() => this.retateFace(2, true)}>Behind</Button>
+              <Button onClick={() => this.retateFace(2, false)}>Behind'</Button>
+            </Button.Group>
+          </div>
+          <div className="item">
+            <Button.Group>
+              <Button type="primary" onClick={() => this.retateFace(1, true)}>Right</Button>
+              <Button onClick={() => this.retateFace(1, false)}>Right'</Button>
+            </Button.Group>
+          </div>
+          <div className="item">
+            <Button.Group>
+              <Button type="primary" onClick={() => this.retateFace(3, true)}>Left</Button>
+              <Button onClick={() => this.retateFace(3, false)}>Left'</Button>
+            </Button.Group>
+          </div>
+          <div className="item">
+            <Button.Group>
+              <Button type="primary" onClick={() => this.retateFace(4, true)}>Up</Button>
+              <Button onClick={() => this.retateFace(4, false)}>Up'</Button>
+            </Button.Group>
+          </div>
+          <div className="item">
+            <Button.Group>
+              <Button type="primary" onClick={() => this.retateFace(5, true)}>Down</Button>
+              <Button onClick={() => this.retateFace(5, false)}>Down'</Button>
+            </Button.Group>
+          </div>
         </div>
       </div>
     )
+  }
+
+  // 随机打乱cube
+  disrupt = () => {
+    if (this.timer) {
+      clearInterval(this.timer)
+      this.timer = null
+      return 
+    }
+    this.timer = setInterval(() => {
+      const faceId = Math.floor(Math.random() * 6)
+      const clockwise = Math.random() > 0.5
+      this.retateFace(faceId, clockwise)
+    }, 550)
   }
 
   // 旋转cube整体
@@ -354,6 +416,14 @@ class App extends Component {
     })
   }
 
+  // 自动旋转
+  autoRotate = () => {
+    const { autoRotating } = this.state
+    this.setState({
+      autoRotating: !autoRotating
+    })
+  }
+
   // 显示sticker编号
   showStickerId = () => {
     const { stickerIdVisible } = this.state
@@ -363,4 +433,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default App

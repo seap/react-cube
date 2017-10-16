@@ -8,7 +8,7 @@ li {
 }
 
 body {
-  
+  background-color: #f0f0f0;
 }
 
 .container {
@@ -59,8 +59,37 @@ body {
   transform-origin: 50px 50px;
 }
 
+.rotating {
+  animation: cubeRotate 5s linear infinite;
+}
+
+@keyframes cubeRotate {
+  0% {
+    transform: rotateX(0deg) rotateY(0deg);
+  }
+  100% {
+    transform: rotateX(360deg) rotateY(360deg);
+  }
+}
+
 .controller {
   position: absolute;
-  left: 50px;
+  left: 800px;
   top: 10px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.controller .item {
+  display: flex;
+  flex: 1;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.container button {
+  width: 60px;
 }
