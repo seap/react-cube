@@ -47,6 +47,7 @@ body {
   height: 100px;
   line-height: 100px;
   text-align: center;
+  border-radius: 6px;
   border: 1px solid #333;
   box-sizing: border-box;
 	z-index: 10;
