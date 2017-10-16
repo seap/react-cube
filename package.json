@@ -1,11 +1,13 @@
 {
   "name": "cube",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "devDependencies": {
+    "babel-plugin-import": "^1.6.2",
     "react-scripts": "1.0.14"
   },
   "dependencies": {
+    "antd": "^2.13.6",
     "react": "^16.0.0",
     "react-dom": "^16.0.0"
   },

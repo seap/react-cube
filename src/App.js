@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
 // 6面颜色, 0前 1右 2后 3左 4上 5下
@@ -29,7 +28,6 @@ const translations = [
   { x:    0, y:  100, z: 150 },
   { x:  100, y:  100, z: 150 }
 ]
-
 // 每面相关的，4个面, 12个stickers
 const linkedStickers = [
   // 0，红
@@ -97,9 +95,9 @@ const linkedStickers = [
     { face: 2, sticker: 2 },
     { face: 2, sticker: 1 },
     { face: 2, sticker: 0 },
-    { face: 1, sticker: 0 },
-    { face: 1, sticker: 1 },
     { face: 1, sticker: 2 },
+    { face: 1, sticker: 1 },
+    { face: 1, sticker: 0 },
     { face: 0, sticker: 2 },
     { face: 0, sticker: 1 },
     { face: 0, sticker: 0 },
