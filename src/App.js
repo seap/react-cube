@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Row, Col } from 'antd'
+import { Button } from 'antd'
 import './App.css'
 
 // 6面颜色, 0前 1右 2后 3左 4上 5下
