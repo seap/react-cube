@@ -1,0 +1,81 @@
+body {
+  background-color: #f8f8f8;
+}
+
+.container {
+  position:absolute;
+
+  width: 1000px;
+}
+
+.box{
+	position: relative;
+	top: 350px;
+	left: 350px;
+	width: 60px;
+	height: 60px;
+  transform-style: preserve-3d;
+	perspective: 800px;
+}
+
+.cube {
+  position: absolute;
+  background-color: #f0f0f0;
+  transform-style: preserve-3d;
+  transition: 0.5s ease all;
+  perspective-origin: 50% 50%;
+}
+
+.face {  
+  transform-style: preserve-3d;
+}
+
+.sticker {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: 1px solid #333;
+  box-sizing: border-box;
+  z-index: 10;
+}
+
+.mirror {
+  opacity: .5;
+}
+
+.rotating {
+  animation: cubeRotate 5s linear infinite;
+}
+
+@keyframes cubeRotate {
+  0% {
+    transform: rotateX(0deg) rotateY(0deg);
+  }
+  100% {
+    transform: rotateX(360deg) rotateY(360deg);
+  }
+}
+
+.controller {
+  position: absolute;
+  left: 800px;
+  top: 10px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.controller .item {
+  display: flex;
+  flex: 1;
+  justify-content: space-around;
+  margin-top: 10px;
+}
+
+.item button {
+  min-width: 50px;
+}
