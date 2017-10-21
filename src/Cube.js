@@ -105,6 +105,7 @@ class Cube extends Component {
     super(props)
     // initial 6 faces, 54 stickers (6 X 9)
     const size = 60
+    const speed = 400
     const faces = []
     for (let i = 0; i < 6; i++) {
       faces[i] = []
@@ -139,7 +140,8 @@ class Cube extends Component {
         { x: 0, y: 0, z: 0 }
       ],
       faces,
-      size,
+      size, // 魔方块大小
+      speed, // 转动速度
       stickerIdVisible: false,
       mirrorVisible: false
     }
@@ -175,6 +177,7 @@ class Cube extends Component {
 
   // 随机打乱cube
   disrupt = () => {
+    const { speed } = this.state
     if (this.timer) {
       clearInterval(this.timer)
       this.timer = null
@@ -183,22 +186,22 @@ class Cube extends Component {
     this.timer = setInterval(() => {
       const faceId = Math.floor(Math.random() * 6)
       const clockwise = Math.random() > 0.5
-      const double = Math.random() > 0.8
-      this.retateFace(faceId, clockwise, double)
-    }, 550)
+      const twoLayers = Math.random() > 0.8
+      this.retateFace(faceId, clockwise, twoLayers)
+    }, speed + 100)
   }
 
   // face id = 0
-  retateFace = (faceId, clockwise, double = false) => {
+  retateFace = (faceId, clockwise, twoLayers = false) => {
     if (this.rotating) {
       return
     }
     this.rotating = true
 
-    const { faces, faceRotations } = this.state
+    const { faces, faceRotations, speed } = this.state
     // 更新12个关联面
     const relations = linkedStickers[faceId]
-    const number = double ? 6 : 3
+    const number = twoLayers ? 6 : 3
     relations.forEach((relation, i) => {
       const { face, stickers } = relation
       for (let j = 0; j < number; j++) {
@@ -216,13 +219,13 @@ class Cube extends Component {
       }
       // 归位
       faceRotations[faceId][rotationDims[faceId]] = 0
-      this.adjustOuterStickerColor(faceId, clockwise, double)
+      this.adjustOuterStickerColor(faceId, clockwise, twoLayers)
       this.adjustInnerStickerColor(faceId, clockwise)
       // 调整sticker, 无过度动画
       this.setState({ faces, faceRotations, faceTransition: false }, () => {
         this.rotating = false
       })
-    }, 500)
+    }, speed + 50)
     
     if (clockwise) {
       faceRotations[faceId][rotationDims[faceId]] += rotationValues[faceId]
@@ -262,11 +265,11 @@ class Cube extends Component {
   }
 
   // 旋转一次后，调整相关4 face, 12 stickers 的相对位置
-  adjustOuterStickerColor = (faceId, clockwise = true, double = false) => {
+  adjustOuterStickerColor = (faceId, clockwise = true, twoLayers = false) => {
     const { faces } = this.state
     const relations = linkedStickers[faceId] 
     // 0 1 2 3 4 5 6 7 8 9 10 11
-    const number = double ? 6 : 3
+    const number = twoLayers ? 6 : 3
     if (clockwise) {
       const tmpColors = relations[3].stickers.map(sticker => faces[relations[3].face][sticker].color)
       for (let i = 3; i > 0 ; i--) {
@@ -299,8 +302,7 @@ class Cube extends Component {
   }
 
   renderMirror() {
-    const { faces, faceRotations, faceTransition, size, cubeRotation, cubeRotating, stickerIdVisible, mirrorVisible } = this.state
-    console.log('renderMirror')
+    const { faces, size, cubeRotation, cubeRotating, stickerIdVisible } = this.state
     return (
       <div className={`cube ${cubeRotating ? 'rotating': ''}`} style={{ width: size, height: size,  transform: this.getTransformStyle({ rotation: cubeRotation }) }}>
         {faces.map((face, i) =>
@@ -338,9 +340,17 @@ class Cube extends Component {
   }
 
   renderCube() {
-    const { faces, faceRotations, faceTransition, size, cubeRotation, cubeRotating, stickerIdVisible, mirrorVisible } = this.state
+    const { faces, faceRotations, faceTransition, size, speed, cubeRotation, cubeRotating, stickerIdVisible } = this.state
     return (
-      <div className={`cube ${cubeRotating ? 'rotating': ''}`} style={{ width: size, height: size,  transform: this.getTransformStyle({ rotation: cubeRotation }) }}>
+      <div 
+        className={`cube ${cubeRotating ? 'rotating': ''}`} 
+        style={{ 
+          width: size, 
+          height: size,
+          transition: `${speed/1000}s ease all`,
+          transform: this.getTransformStyle({ rotation: cubeRotation }) 
+        }}
+      >
         {faces.map((face, i) =>
           <div 
             id={i}
@@ -372,6 +382,14 @@ class Cube extends Component {
         )}
       </div>
     )
+  }
+
+  resetStickers = () => {
+    const { faces } = this.state
+    faces.forEach((face, i) => face.forEach(sticker => {
+      sticker.color = colors[i]
+    })) 
+    this.setState({ faces })
   }
 
   // 显示sticker编号
@@ -414,7 +432,7 @@ class Cube extends Component {
         
         <div className="item">
           <Button.Group>
-            <Button type="primary" onClick={() => this.disrupt()}>打乱</Button>
+            <Button type="primary" onClick={() => this.disrupt()} >打乱</Button>
             <Button onClick={() => this.showStickerId()}>编号</Button>
             <Button type="primary" onClick={() => this.showMirror()}>镜子</Button>
             <Button onClick={() => this.autoRotate()}>自转</Button>
@@ -432,7 +450,7 @@ class Cube extends Component {
           </div>
         )}
         <div className="item">
-          <Button type="primary" onClick={() => this.disrupt()}>(R U U R' U') (R U R' U') (R U' R')</Button>
+          <Button type="primary" onClick={() => this.resetStickers()}>(R U U R' U') (R U R' U') (R U' R')</Button>
         </div>
       </div>
     )

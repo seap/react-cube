@@ -22,7 +22,6 @@ body {
   position: absolute;
   background-color: #f0f0f0;
   transform-style: preserve-3d;
-  transition: 0.5s ease all;
   perspective-origin: 50% 50%;
 }
 
@@ -77,5 +76,5 @@ body {
 }
 
 .item button {
-  min-width: 50px;
+  min-width: 60px;
 }
